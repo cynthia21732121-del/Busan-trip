@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>釜山美學與美食 4天3夜</title>
+    <title>釜山美學之旅 4D3N</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,15 +15,16 @@
             --food-accent: #D9A596;
             --transport-accent: #A5B6C4;
             --tag-eat: #FFF2F0;
-            --tag-warn: #FFF0F0;
+            --tag-info: #F0F5F9;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #F0F0F0; display: flex; justify-content: center; margin: 0; }
         #app-container { width: 100%; max-width: 480px; height: 100vh; height: 100dvh; background-color: var(--bg-color); position: relative; display: flex; flex-direction: column; overflow: hidden; }
         
-        header { background-color: var(--card-bg); padding: 20px; text-align: center; border-bottom: 1px solid #EBEBEB; z-index: 30; }
-        header h1 { font-size: 1.1rem; color: var(--text-main); font-weight: 600; }
+        header { background-color: var(--card-bg); padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid #EBEBEB; flex-shrink: 0; }
+        header h1 { font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin-bottom: 4px; }
+        .flight-info { font-size: 0.7rem; color: var(--text-muted); }
 
         .day-scroller { display: flex; overflow-x: auto; padding: 12px 20px; gap: 10px; background: var(--bg-color); flex-shrink: 0; scrollbar-width: none; }
         .day-scroller::-webkit-scrollbar { display: none; }
@@ -40,18 +41,17 @@
         .card.food { border-left-color: var(--food-accent); }
         .card.transport { border-left-color: var(--transport-accent); }
 
-        .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .time-label { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
         
         .nav-link { background: #F8F8F8; border: 1px solid #EAEAEA; padding: 6px 12px; border-radius: 15px; color: var(--text-main); text-decoration: none; font-size: 0.75rem; font-weight: 600; }
-        .nav-link i { margin-right: 4px; color: #666; }
 
-        .card h2 { font-size: 1.05rem; margin-bottom: 5px; color: var(--text-main); }
-        .card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+        .card h2 { font-size: 1.05rem; margin-bottom: 6px; color: var(--text-main); }
+        .card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; white-space: pre-line; }
         
-        .tag-item { font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
-        .tag-item.warn { background: var(--tag-warn); color: #D14343; }
+        .tag-item { font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; margin-top: 10px; display: inline-flex; align-items: flex-start; gap: 6px; font-weight: 600; line-height: 1.4; }
         .tag-item.eat { background: var(--tag-eat); color: #B26A5A; }
+        .tag-item.info { background: var(--tag-info); color: #5B7A8C; }
 
         .tab-bar { position: absolute; bottom: 0; width: 100%; height: 80px; background: rgba(255, 255, 255, 0.98); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #F0F0F0; z-index: 50; padding-bottom: 15px; }
         .tab-item { text-align: center; color: #C2C2C2; cursor: pointer; font-size: 0.75em; flex: 1; display: flex; flex-direction: column; align-items: center; }
@@ -62,7 +62,10 @@
 <body>
 
 <div id="app-container">
-    <header><h1>釜山 4天3夜 美學行程</h1></header>
+    <header>
+        <h1>釜山美學行程</h1>
+        <div class="flight-info">5/14 7C6152 ➔ 5/17 7C6153</div>
+    </header>
 
     <div class="day-scroller">
         <div class="day-btn active" onclick="switchDay('d1', this)">Day 1</div>
@@ -76,15 +79,16 @@
             <div class="card transport">
                 <div class="card-meta"><span class="time-label">15:30 - 17:30</span></div>
                 <h2>機場 ➔ 海雲台飯店</h2>
-                <p>前往 UH Suite 海雲台飯店 Check-in。</p>
+                <p>辦理入境後搭車前往 UH Suite 海雲台飯店 Check-in 放置行李。</p>
             </div>
             <div class="card attraction">
                 <div class="card-meta">
                     <span class="time-label">17:30 - 19:30</span>
                     <a href="https://www.google.com/maps/search/LUFT+MANSION+Busan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>海雲台逛街 (選物店)</h2>
-                <p>逛 LUFT MANSION、Object 找插畫與陳列靈感。</p>
+                <h2>海雲台逛街取材</h2>
+                <p>趁選物店打烊前先逛！尋找日系簡約陳列靈感與貓咪插畫周邊，並在 Olive Young 補齊藥妝。</p>
+                <div class="tag-item info">必逛：LUFT MANSION, Olive Young, Object</div>
             </div>
             <div class="card food">
                 <div class="card-meta">
@@ -92,27 +96,58 @@
                     <a href="https://www.google.com/maps/search/水邊最高豬肉湯飯+海雲台" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
                 <h2>水邊最高豬肉湯飯</h2>
-                <p>釜山靈魂美食，喝熱呼呼濃郁湯頭。</p>
+                <p>喝熱呼呼的濃郁鮮甜湯頭暖胃，體驗釜山最具代表性的靈魂美食。</p>
+            </div>
+            <div class="card food">
+                <div class="card-meta"><span class="time-label">20:30 之後</span></div>
+                <h2>海雲台傳統市場 (宵夜)</h2>
+                <p>散步買份糖餅或辣炒年糕，帶回飯店看著海景享用。</p>
             </div>
         </div>
 
         <div id="d2" class="day-panel">
+            <div class="card attraction">
+                <div class="card-meta"><span class="time-label">09:00</span></div>
+                <h2>海雲台晨間攝影</h2>
+                <p>捕捉早晨最乾淨的海景光線與色調，為後續插畫創作累積素材。</p>
+            </div>
             <div class="card attraction">
                 <div class="card-meta">
                     <span class="time-label">10:30</span>
                     <a href="https://www.google.com/maps/search/甘川文化村" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
                 <h2>甘川文化村 ＆ Flipbook</h2>
-                <p>彩色屋取材，製作專屬翻頁小書。</p>
+                <p>穿梭彩色屋落尋找壁畫取材，並製作專屬的實體翻頁小書留念。</p>
+            </div>
+            <div class="card transport">
+                <div class="card-meta">
+                    <span class="time-label">12:00</span>
+                    <a href="https://www.google.com/maps/search/松島海上纜車" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                </div>
+                <h2>松島海上纜車</h2>
+                <p>搭乘水晶車廂跨越海灣，享受空中美景。</p>
+            </div>
+            <div class="card food">
+                <div class="card-meta">
+                    <span class="time-label">13:00</span>
+                    <a href="https://www.google.com/maps/search/札嘎其市場" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                </div>
+                <h2>札嘎其市場</h2>
+                <p>在韓國最大海鮮市場品嚐最道地的現切生魚片。</p>
+            </div>
+            <div class="card attraction">
+                <div class="card-meta"><span class="time-label">15:00</span></div>
+                <h2>南浦洞商圈</h2>
+                <p>在商圈散步消化，觀察在地設計與熱鬧氛圍。</p>
             </div>
             <div class="card attraction">
                 <div class="card-meta">
                     <span class="time-label">16:00</span>
-                    <a href="https://www.google.com/maps/search/Thrill+on+the+mug+Busan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                    <a href="https://www.google.com/maps/search/THRILL+ON+THE+MUG" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>Thrill on the mug ☕️</h2>
-                <p>影島絕美海景咖啡廳。</p>
-                <div class="tag-item warn"><i class="fas fa-taxi"></i> 攻略：建議從南浦洞搭計程車直達</div>
+                <h2>Thrill on the mug</h2>
+                <p>影島海景階梯咖啡廳下午茶。避開上坡路，享受無敵海景。</p>
+                <div class="tag-item info"><i class="fas fa-taxi"></i> 建議：從南浦洞直接搭計程車直達</div>
             </div>
             <div class="card food">
                 <div class="card-meta">
@@ -120,7 +155,7 @@
                     <a href="https://www.google.com/maps/search/烤肉的男子+南浦店" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
                 <h2>烤肉的男子 (南浦店)</h2>
-                <p>享受專業代烤的極厚熟成豬五花。</p>
+                <p>專業代烤的極厚熟成豬五花，酥脆多汁，慰勞一天的辛勞。</p>
             </div>
         </div>
 
@@ -128,19 +163,35 @@
             <div class="card food">
                 <div class="card-meta">
                     <span class="time-label">09:00</span>
-                    <a href="https://www.google.com/maps/search/greetvi+coffee+Busan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                    <a href="https://www.google.com/maps/search/Greetvi+Coffee+機張" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>機張 greetvi coffee</h2>
-                <p>在大片海景落地窗前速寫放空。</p>
+                <h2>greetvi coffee</h2>
+                <p>前往機張絕美海景咖啡廳，在大片落地窗前享受速寫與放空時光。</p>
+            </div>
+            <div class="card attraction">
+                <div class="card-meta">
+                    <span class="time-label">10:30</span>
+                    <a href="https://www.google.com/maps/search/Lotte+Premium+Outlet+Dongbusan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                </div>
+                <h2>樂天 Outlet</h2>
+                <p>逛逛希臘聖托里尼風格的超大型商場，尋找攝影構圖靈感。</p>
+            </div>
+            <div class="card attraction">
+                <div class="card-meta">
+                    <span class="time-label">14:00</span>
+                    <a href="https://www.google.com/maps/search/新世界百貨+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                </div>
+                <h2>新世界百貨 (Centum City)</h2>
+                <p>回到市區，逛金氏世界紀錄最大的百貨公司取材。</p>
             </div>
             <div class="card food">
                 <div class="card-meta">
                     <span class="time-label">18:00</span>
                     <a href="https://www.google.com/maps/search/螞蟻家+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>螞蟻家 辣炒章魚肥腸蝦 🦐</h2>
-                <p>道地名物拌飯，就在新世界百貨對面。</p>
-                <div class="tag-item eat">必點：落烤蝦 (낙곱새)</div>
+                <h2>螞蟻家 辣炒章魚肥腸蝦</h2>
+                <p>享用釜山必吃名物「落烤蝦 (낙곱새)」。香辣濃郁醬汁拌飯，超級過癮！</p>
+                <div class="tag-item eat">必點：낙곱새 (章魚+肥腸+蝦)</div>
             </div>
             <div class="card attraction">
                 <div class="card-meta">
@@ -148,7 +199,7 @@
                     <a href="https://www.google.com/maps/search/Spa+Land+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
                 <h2>Spa Land 汗蒸幕</h2>
-                <p>五星級汗蒸幕，徹底消除疲勞。</p>
+                <p>吃飽後散步回百貨享受五星級汗蒸幕，敲顆烤雞蛋配甜米釀徹底放鬆。</p>
             </div>
         </div>
 
@@ -158,29 +209,34 @@
                     <span class="time-label">11:30</span>
                     <a href="https://www.google.com/maps/search/海雲台+醬蟹" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>海雲台醬蟹大餐 🦀</h2>
-                <p>最後一天的能量補給，蟹黃拌飯！</p>
+                <h2>海雲台醬蟹大餐</h2>
+                <p>退房後直奔「白飯小偷」醬蟹店，用濃郁蟹黃拌飯開啟最後一天。</p>
+            </div>
+            <div class="card transport">
+                <div class="card-meta"><span class="time-label">中午</span></div>
+                <h2>移動至西面</h2>
+                <p>帶著行李移動至西面站，並寄放在車站置物櫃，輕鬆逛街。</p>
             </div>
             <div class="card attraction">
                 <div class="card-meta">
                     <span class="time-label">下午</span>
-                    <a href="https://www.google.com/maps/search/Youssoful+田浦店" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                    <a href="https://www.google.com/maps/search/Youssoful+田浦" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
                 </div>
-                <h2>西面醫美 ➔ 田浦選物</h2>
-                <p>保養膚況後，去逛 Youssoful 採購質感香氛。</p>
+                <h2>醫美保養 ➔ 田浦選物</h2>
+                <p>✨ 預約西面站診所進行皮膚保養。保養完到田浦商圈逛 Youssoful 挑選質感香水。</p>
             </div>
             <div class="card transport">
                 <div class="card-meta"><span class="time-label">19:30</span></div>
                 <h2>前往機場</h2>
-                <p>帶著美美的心情搭機回台。</p>
+                <p>拿好行李前往金海機場，晚餐直接在機場解決。搭乘 22:00 班機回台！</p>
             </div>
         </div>
     </div>
 
     <div class="tab-bar">
-        <div class="tab-item active" onclick="location.reload()"><i class="fas fa-calendar-alt"></i><span>行程</span></div>
-        <div class="tab-item"><i class="fas fa-info-circle"></i><span>資訊</span></div>
-        <div class="tab-item"><i class="fas fa-wallet"></i><span>記帳</span></div>
+        <div class="tab-item active" onclick="location.reload()"><i class="fas fa-calendar-alt"></i><span>每日行程</span></div>
+        <div class="tab-item"><i class="fas fa-map-marked-alt"></i><span>地圖導航</span></div>
+        <div class="tab-item"><i class="fas fa-wallet"></i><span>預算記帳</span></div>
     </div>
 </div>
 
