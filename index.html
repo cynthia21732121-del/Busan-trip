@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>釜山美學之旅 4D3N</title>
+    <title>釜山美學行程 4D3N</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -23,8 +23,11 @@
         #app-container { width: 100%; max-width: 480px; height: 100vh; height: 100dvh; background-color: var(--bg-color); position: relative; display: flex; flex-direction: column; overflow: hidden; }
         
         header { background-color: var(--card-bg); padding: 20px 20px 10px; text-align: center; border-bottom: 1px solid #EBEBEB; flex-shrink: 0; }
-        header h1 { font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin-bottom: 4px; }
-        .flight-info { font-size: 0.7rem; color: var(--text-muted); }
+        header h1 { font-size: 1.1rem; color: var(--text-main); font-weight: 600; }
+
+        /* 分頁切換 */
+        .main-content { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .main-content.active { display: flex; }
 
         .day-scroller { display: flex; overflow-x: auto; padding: 12px 20px; gap: 10px; background: var(--bg-color); flex-shrink: 0; scrollbar-width: none; }
         .day-scroller::-webkit-scrollbar { display: none; }
@@ -33,8 +36,8 @@
 
         .scroll-view { flex: 1; overflow-y: auto; padding: 10px 20px 100px; }
         .day-panel { display: none; }
-        .day-panel.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .day-panel.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .card { background: var(--card-bg); border-radius: 18px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); position: relative; border-left: 5px solid #DDD; }
         .card.attraction { border-left-color: var(--primary-accent); }
@@ -47,207 +50,168 @@
         .nav-link { background: #F8F8F8; border: 1px solid #EAEAEA; padding: 6px 12px; border-radius: 15px; color: var(--text-main); text-decoration: none; font-size: 0.75rem; font-weight: 600; }
 
         .card h2 { font-size: 1.05rem; margin-bottom: 6px; color: var(--text-main); }
-        .card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; white-space: pre-line; }
+        .card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
         
-        .tag-item { font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; margin-top: 10px; display: inline-flex; align-items: flex-start; gap: 6px; font-weight: 600; line-height: 1.4; }
-        .tag-item.eat { background: var(--tag-eat); color: #B26A5A; }
-        .tag-item.info { background: var(--tag-info); color: #5B7A8C; }
+        /* 匯率換算器樣式 */
+        .calc-container { padding: 20px; background: white; border-radius: 18px; margin-top: 10px; }
+        .calc-input-group { margin-bottom: 20px; }
+        .calc-input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        .calc-input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #EEE; font-size: 1.2rem; background: #F9F9F9; }
+        .rate-info { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px; }
 
-        .tab-bar { position: absolute; bottom: 0; width: 100%; height: 80px; background: rgba(255, 255, 255, 0.98); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #F0F0F0; z-index: 50; padding-bottom: 15px; }
-        .tab-item { text-align: center; color: #C2C2C2; cursor: pointer; font-size: 0.75em; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        /* 底部選單 */
+        .tab-bar { position: absolute; bottom: 0; width: 100%; height: 80px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #F0F0F0; padding-bottom: 15px; }
+        .tab-item { text-align: center; color: #C2C2C2; cursor: pointer; font-size: 0.7rem; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .tab-item.active { color: var(--text-main); font-weight: 600; }
-        .tab-item i { font-size: 1.4em; margin-bottom: 4px; }
+        .tab-item i { font-size: 1.3rem; }
     </style>
 </head>
 <body>
 
 <div id="app-container">
-    <header>
-        <h1>釜山美學行程</h1>
-        <div class="flight-info">5/14 7C6152 ➔ 5/17 7C6153</div>
-    </header>
+    <header><h1>釜山美學行程 App</h1></header>
 
-    <div class="day-scroller">
-        <div class="day-btn active" onclick="switchDay('d1', this)">Day 1</div>
-        <div class="day-btn" onclick="switchDay('d2', this)">Day 2</div>
-        <div class="day-btn" onclick="switchDay('d3', this)">Day 3</div>
-        <div class="day-btn" onclick="switchDay('d4', this)">Day 4</div>
+    <div id="view-schedule" class="main-content active">
+        <div class="day-scroller">
+            <div class="day-btn active" onclick="switchDay('d1', this)">Day 1</div>
+            <div class="day-btn" onclick="switchDay('d2', this)">Day 2</div>
+            <div class="day-btn" onclick="switchDay('d3', this)">Day 3</div>
+            <div class="day-btn" onclick="switchDay('d4', this)">Day 4</div>
+        </div>
+        <div class="scroll-view">
+            <div id="d1" class="day-panel active">
+                <div class="card transport"><h2>15:30 機場 ➔ 飯店</h2><p>UH Suite 海雲台飯店 Check-in</p></div>
+                <div class="card attraction">
+                    <div class="card-meta">
+                        <span class="time-label">17:30 逛街</span>
+                        <a href="https://www.google.com/maps/search/LUFT+MANSION+Busan" target="_blank" class="nav-link">導航</a>
+                    </div>
+                    <h2>海雲台美學取材</h2><p>LUFT MANSION, Object 尋找靈感。</p>
+                </div>
+                <div class="card food">
+                    <div class="card-meta">
+                        <span class="time-label">19:30 晚餐</span>
+                        <a href="https://www.google.com/maps/search/Subyeon+Choigo+Pork+Soup" target="_blank" class="nav-link">導航</a>
+                    </div>
+                    <h2>水邊最高豬肉湯飯</h2><p>釜山靈魂名店，必吃道地湯飯。</p>
+                </div>
+            </div>
+            <div id="d2" class="day-panel">
+                <div class="card attraction">
+                    <div class="card-meta"><span class="time-label">10:30</span><a href="https://www.google.com/maps/search/Gamcheon+Culture+Village" target="_blank" class="nav-link">導航</a></div>
+                    <h2>甘川文化村</h2><p>彩色屋取材，製作翻頁書。</p>
+                </div>
+                <div class="card attraction">
+                    <div class="card-meta"><span class="time-label">16:00</span><a href="https://www.google.com/maps/search/Thrill+on+the+mug+Yeongdo" target="_blank" class="nav-link">導航</a></div>
+                    <h2>Thrill on the mug</h2><p>影島海景咖啡廳 (🚕建議搭計程車)。</p>
+                </div>
+                <div class="card food">
+                    <div class="card-meta"><span class="time-label">19:00</span><a href="https://www.google.com/maps/search/烤肉的男子+南浦店" target="_blank" class="nav-link">導航</a></div>
+                    <h2>烤肉的男子</h2><p>專業代烤極厚豬五花。</p>
+                </div>
+            </div>
+            <div id="d3" class="day-panel">
+                <div class="card food">
+                    <div class="card-meta"><span class="time-label">09:00</span><a href="https://www.google.com/maps/search/greetvi+coffee+Gijang" target="_blank" class="nav-link">導航</a></div>
+                    <h2>Greetvi Coffee</h2><p>機張絕美落地窗海景速寫。</p>
+                </div>
+                <div class="card food">
+                    <div class="card-meta"><span class="time-label">18:00</span><a href="https://www.google.com/maps/search/Gaemijip+Centum" target="_blank" class="nav-link">導航</a></div>
+                    <h2>螞蟻家 辣炒章魚肥腸蝦</h2><p>道地釜山名物拌飯。</p>
+                </div>
+                <div class="card attraction">
+                    <div class="card-meta"><span class="time-label">19:30</span><a href="https://www.google.com/maps/search/Spa+Land+Centum+City" target="_blank" class="nav-link">導航</a></div>
+                    <h2>Spa Land</h2><p>五星級汗蒸幕徹底放鬆。</p>
+                </div>
+            </div>
+            <div id="d4" class="day-panel">
+                <div class="card food">
+                    <div class="card-meta"><span class="time-label">11:30</span><a href="https://www.google.com/maps/search/Sinsa+Kkotge+Busan" target="_blank" class="nav-link">導航</a></div>
+                    <h2>醬蟹大餐</h2><p>最後一天的白飯小偷能量補給。</p>
+                </div>
+                <div class="card attraction">
+                    <div class="card-meta"><span class="time-label">下午</span><a href="https://www.google.com/maps/search/Youssoful+Seomyeon" target="_blank" class="nav-link">導航</a></div>
+                    <h2>醫美 ➔ 田浦香氛</h2><p>西面皮膚保養，採購 Youssoful 香水。</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="scroll-view">
-        <div id="d1" class="day-panel active">
-            <div class="card transport">
-                <div class="card-meta"><span class="time-label">15:30 - 17:30</span></div>
-                <h2>機場 ➔ 海雲台飯店</h2>
-                <p>辦理入境後搭車前往 UH Suite 海雲台飯店 Check-in 放置行李。</p>
+    <div id="view-flights" class="main-content">
+        <div class="scroll-view">
+            <div class="card attraction">
+                <h2>去程 (5/14) ✈️</h2>
+                <p>12:00 桃園 (T1) ➔ 15:30 釜山金海<br>濟州航空 7C6152</p>
             </div>
             <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">17:30 - 19:30</span>
-                    <a href="https://www.google.com/maps/search/LUFT+MANSION+Busan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>海雲台逛街取材</h2>
-                <p>趁選物店打烊前先逛！尋找日系簡約陳列靈感與貓咪插畫周邊，並在 Olive Young 補齊藥妝。</p>
-                <div class="tag-item info">必逛：LUFT MANSION, Olive Young, Object</div>
+                <h2>回程 (5/17) ✈️</h2>
+                <p>22:00 釜山金海 ➔ 23:30 桃園 (T1)<br>濟州航空 7C6153</p>
             </div>
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">19:30 - 20:30</span>
-                    <a href="https://www.google.com/maps/search/水邊最高豬肉湯飯+海雲台" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>水邊最高豬肉湯飯</h2>
-                <p>喝熱呼呼的濃郁鮮甜湯頭暖胃，體驗釜山最具代表性的靈魂美食。</p>
-            </div>
-            <div class="card food">
-                <div class="card-meta"><span class="time-label">20:30 之後</span></div>
-                <h2>海雲台傳統市場 (宵夜)</h2>
-                <p>散步買份糖餅或辣炒年糕，帶回飯店看著海景享用。</p>
+            <div class="card transport">
+                <h2>🏨 住宿：UH Suite 海雲台</h2>
+                <p>地址：釜山廣域市海雲台區海雲台海邊路 271</p>
             </div>
         </div>
+    </div>
 
-        <div id="d2" class="day-panel">
-            <div class="card attraction">
-                <div class="card-meta"><span class="time-label">09:00</span></div>
-                <h2>海雲台晨間攝影</h2>
-                <p>捕捉早晨最乾淨的海景光線與色調，為後續插畫創作累積素材。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">10:30</span>
-                    <a href="https://www.google.com/maps/search/甘川文化村" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+    <div id="view-currency" class="main-content">
+        <div class="scroll-view">
+            <div class="calc-container">
+                <div class="calc-input-group">
+                    <label>今日匯率 (1 台幣 = ? 韓幣)</label>
+                    <input type="number" id="exchangeRate" value="42.5" oninput="convertCurrency('twd')">
                 </div>
-                <h2>甘川文化村 ＆ Flipbook</h2>
-                <p>穿梭彩色屋落尋找壁畫取材，並製作專屬的實體翻頁小書留念。</p>
-            </div>
-            <div class="card transport">
-                <div class="card-meta">
-                    <span class="time-label">12:00</span>
-                    <a href="https://www.google.com/maps/search/松島海上纜車" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                <div class="calc-input-group">
+                    <label>台幣 (TWD)</label>
+                    <input type="number" id="twdInput" placeholder="輸入台幣" oninput="convertCurrency('twd')">
                 </div>
-                <h2>松島海上纜車</h2>
-                <p>搭乘水晶車廂跨越海灣，享受空中美景。</p>
-            </div>
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">13:00</span>
-                    <a href="https://www.google.com/maps/search/札嘎其市場" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
+                <div class="calc-input-group">
+                    <label>韓幣 (KRW)</label>
+                    <input type="number" id="krwInput" placeholder="輸入韓幣" oninput="convertCurrency('krw')">
                 </div>
-                <h2>札嘎其市場</h2>
-                <p>在韓國最大海鮮市場品嚐最道地的現切生魚片。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta"><span class="time-label">15:00</span></div>
-                <h2>南浦洞商圈</h2>
-                <p>在商圈散步消化，觀察在地設計與熱鬧氛圍。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">16:00</span>
-                    <a href="https://www.google.com/maps/search/THRILL+ON+THE+MUG" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>Thrill on the mug</h2>
-                <p>影島海景階梯咖啡廳下午茶。避開上坡路，享受無敵海景。</p>
-                <div class="tag-item info"><i class="fas fa-taxi"></i> 建議：從南浦洞直接搭計程車直達</div>
-            </div>
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">19:00</span>
-                    <a href="https://www.google.com/maps/search/烤肉的男子+南浦店" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>烤肉的男子 (南浦店)</h2>
-                <p>專業代烤的極厚熟成豬五花，酥脆多汁，慰勞一天的辛勞。</p>
-            </div>
-        </div>
-
-        <div id="d3" class="day-panel">
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">09:00</span>
-                    <a href="https://www.google.com/maps/search/Greetvi+Coffee+機張" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>greetvi coffee</h2>
-                <p>前往機張絕美海景咖啡廳，在大片落地窗前享受速寫與放空時光。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">10:30</span>
-                    <a href="https://www.google.com/maps/search/Lotte+Premium+Outlet+Dongbusan" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>樂天 Outlet</h2>
-                <p>逛逛希臘聖托里尼風格的超大型商場，尋找攝影構圖靈感。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">14:00</span>
-                    <a href="https://www.google.com/maps/search/新世界百貨+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>新世界百貨 (Centum City)</h2>
-                <p>回到市區，逛金氏世界紀錄最大的百貨公司取材。</p>
-            </div>
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">18:00</span>
-                    <a href="https://www.google.com/maps/search/螞蟻家+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>螞蟻家 辣炒章魚肥腸蝦</h2>
-                <p>享用釜山必吃名物「落烤蝦 (낙곱새)」。香辣濃郁醬汁拌飯，超級過癮！</p>
-                <div class="tag-item eat">必點：낙곱새 (章魚+肥腸+蝦)</div>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">19:30</span>
-                    <a href="https://www.google.com/maps/search/Spa+Land+Centum+City" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>Spa Land 汗蒸幕</h2>
-                <p>吃飽後散步回百貨享受五星級汗蒸幕，敲顆烤雞蛋配甜米釀徹底放鬆。</p>
-            </div>
-        </div>
-
-        <div id="d4" class="day-panel">
-            <div class="card food">
-                <div class="card-meta">
-                    <span class="time-label">11:30</span>
-                    <a href="https://www.google.com/maps/search/海雲台+醬蟹" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>海雲台醬蟹大餐</h2>
-                <p>退房後直奔「白飯小偷」醬蟹店，用濃郁蟹黃拌飯開啟最後一天。</p>
-            </div>
-            <div class="card transport">
-                <div class="card-meta"><span class="time-label">中午</span></div>
-                <h2>移動至西面</h2>
-                <p>帶著行李移動至西面站，並寄放在車站置物櫃，輕鬆逛街。</p>
-            </div>
-            <div class="card attraction">
-                <div class="card-meta">
-                    <span class="time-label">下午</span>
-                    <a href="https://www.google.com/maps/search/Youssoful+田浦" target="_blank" class="nav-link"><i class="fas fa-location-arrow"></i> 導航</a>
-                </div>
-                <h2>醫美保養 ➔ 田浦選物</h2>
-                <p>✨ 預約西面站診所進行皮膚保養。保養完到田浦商圈逛 Youssoful 挑選質感香水。</p>
-            </div>
-            <div class="card transport">
-                <div class="card-meta"><span class="time-label">19:30</span></div>
-                <h2>前往機場</h2>
-                <p>拿好行李前往金海機場，晚餐直接在機場解決。搭乘 22:00 班機回台！</p>
+                <p class="rate-info">※ 匯率會變動，請依當下公告修改數值。</p>
             </div>
         </div>
     </div>
 
     <div class="tab-bar">
-        <div class="tab-item active" onclick="location.reload()"><i class="fas fa-calendar-alt"></i><span>每日行程</span></div>
-        <div class="tab-item"><i class="fas fa-map-marked-alt"></i><span>地圖導航</span></div>
-        <div class="tab-item"><i class="fas fa-wallet"></i><span>預算記帳</span></div>
+        <div class="tab-item active" onclick="showTab('view-schedule', this)">
+            <i class="fas fa-calendar-alt"></i><span>每日行程</span>
+        </div>
+        <div class="tab-item" onclick="showTab('view-flights', this)">
+            <i class="fas fa-plane"></i><span>航班資訊</span>
+        </div>
+        <div class="tab-item" onclick="showTab('view-currency', this)">
+            <i class="fas fa-coins"></i><span>匯率換算</span>
+        </div>
     </div>
 </div>
 
 <script>
+    function showTab(viewId, el) {
+        document.querySelectorAll('.main-content').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        el.classList.add('active');
+    }
+
     function switchDay(dayId, el) {
         document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(dayId).classList.add('active');
         el.classList.add('active');
     }
+
+    function convertCurrency(type) {
+        const rate = parseFloat(document.getElementById('exchangeRate').value) || 0;
+        const twd = document.getElementById('twdInput');
+        const krw = document.getElementById('krwInput');
+        if (type === 'twd') {
+            krw.value = (parseFloat(twd.value) * rate).toFixed(0);
+        } else {
+            twd.value = (parseFloat(krw.value) / rate).toFixed(0);
+        }
+    }
 </script>
 </body>
 </html>
-
